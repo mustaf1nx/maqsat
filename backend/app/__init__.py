@@ -1,0 +1,1 @@
+"""MAQSAT backend application package."""
