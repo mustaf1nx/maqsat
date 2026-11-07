@@ -2,7 +2,7 @@ import {createContext,useContext,useState,useEffect,useCallback} from 'react';
 import type {ReactNode} from 'react';
 import type {Editor,Person,Page,Kind} from '../lib/types';
 export type Api=<T=Record<string,unknown>>(path:string,method?:string,data?:unknown,signal?:AbortSignal)=>Promise<T>;
-export type AppState={user:Person;api:Api;version:number;refresh:()=>void;notify:(text:string,error?:boolean,undo?:()=>Promise<void>)=>void;edit:(kind:Kind,value?:object,scope?:'single'|'series')=>void;close:()=>void;go:(page:Page)=>void;templates:(kind?:Kind)=>void;updateUser:(user:Person)=>void;};
+export type AppState={user:Person;api:Api;version:number;refresh:()=>void;notify:(text:string,error?:boolean,undo?:()=>Promise<void>)=>void;edit:(kind:Kind,value?:object,scope?:'single'|'following'|'series')=>void;close:()=>void;go:(page:Page)=>void;templates:(kind?:Kind)=>void;updateUser:(user:Person)=>void;};
 export const Context=createContext<AppState|null>(null);
 export function useApp(){const ctx=useContext(Context);if(!ctx)throw Error('App context required');return ctx}
 export function useData<T>(path:string,initial:T){

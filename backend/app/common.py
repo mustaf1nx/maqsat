@@ -59,6 +59,8 @@ def serialize(obj):
 
 def owned(db, cls, user, object_id, lock=False):
     stmt = select(cls).where(cls.id == object_id, cls.user_id == user.id)
+    if hasattr(cls, 'deleted_at'):
+        stmt = stmt.where(cls.deleted_at.is_(None))
     if lock:
         stmt = stmt.with_for_update()
     obj = db.scalar(stmt)
@@ -68,7 +70,9 @@ def owned(db, cls, user, object_id, lock=False):
 
 
 def records(db, cls, user):
-    return db.scalars(select(cls).where(cls.user_id == user.id)).all()
+    stmt = select(cls).where(cls.user_id == user.id)
+    if hasattr(cls, 'deleted_at'): stmt = stmt.where(cls.deleted_at.is_(None))
+    return db.scalars(stmt).all()
 
 
 def add(db, cls, user, **data):

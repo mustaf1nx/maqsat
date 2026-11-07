@@ -1,0 +1,24 @@
+const fs=require('node:fs'),ts=require('typescript');
+require.extensions['.ts']=(m,f)=>m._compile(ts.transpileModule(fs.readFileSync(f,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,f);
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const c=require('../src/lib/calendarSelection.ts'),d=require('../src/lib/dates.ts'),grid=require('../src/lib/calendar.ts');
+const Z='Asia/Almaty',DAY='2026-11-09';
+function wall(s){return [d.localInput(s.starts_at,Z),d.localInput(s.ends_at,Z)]}
+for(const [a,b,start,end] of [[600,690,'10:00','11:30'],[840,750,'12:30','14:00'],[604,604,'10:00','10:15'],[1439,1440,'23:45','00:00'],[0,-100,'00:00','00:15']])test('drag range '+a+' to '+b,()=>{const s=c.selectionBetween(DAY,a,DAY,b,Z);const w=wall(s);assert.equal(w[0],DAY+'T'+start);assert.equal(w[1],(end==='00:00'?'2026-11-10':DAY)+'T'+end);assert.equal(s.all_day,false)});
+test('cross-day selection and reversal are equivalent',()=>{const a=c.selectionBetween(DAY,600,'2026-11-10',660,Z),b=c.selectionBetween('2026-11-10',660,DAY,600,Z);assert.deepEqual(a,b);assert.deepEqual(wall(a),[DAY+'T10:00','2026-11-10T11:00'])});
+test('long drag rejected, not silently truncated',()=>assert.throws(()=>c.selectionBetween(DAY,0,'2026-11-18',0,Z)));
+test('click uses selected default duration and clamps midnight',()=>{assert.deepEqual(wall(c.clickSelection(DAY,608,Z,90)),[DAY+'T10:00',DAY+'T11:30']);assert.deepEqual(wall(c.clickSelection(DAY,1439,Z,120)),[DAY+'T23:45','2026-11-10T00:00'])});
+for(const step of [5,15,30,60])test('range obeys '+step+' minute grid',()=>{const w=wall(c.selectionBetween(DAY,608,DAY,736,Z,step));assert.equal(d.minutesOf(d.toISO(w[0],Z),Z)%step,0);assert.equal(d.minutesOf(d.toISO(w[1],Z),Z)%step,0)});
+test('all-day range includes selected end and reverses',()=>{const a=c.allDaySelection(DAY,'2026-11-11',Z),b=c.allDaySelection('2026-11-11',DAY,Z);assert.deepEqual(a,b);assert.deepEqual(wall(a),[DAY+'T00:00','2026-11-12T00:00']);assert.equal(a.all_day,true)});
+test('all-day DST spring day is 23 hours',()=>{const s=c.allDaySelection('2026-03-08','2026-03-08','America/New_York');assert.equal(Date.parse(s.ends_at)-Date.parse(s.starts_at),23*3600000)});
+test('all-day DST fall day is 25 hours',()=>{const s=c.allDaySelection('2026-11-01','2026-11-01','America/New_York');assert.equal(Date.parse(s.ends_at)-Date.parse(s.starts_at),25*3600000)});
+test('nonexistent DST start is rejected without a bad draft',()=>assert.throws(()=>c.selectionBetween('2026-03-08',150,'2026-03-08',210,'America/New_York')));
+test('selection clips multiple day overlays with exclusive end',()=>{const s=c.allDaySelection(DAY,'2026-11-10',Z);assert.deepEqual(c.selectionSegments(s,[DAY,'2026-11-10','2026-11-11'],Z),[{day:DAY,start:0,end:1440},{day:'2026-11-10',start:0,end:1440}])});
+test('night preview shows each part once',()=>{const s=c.selectionBetween(DAY,1380,'2026-11-10',60,Z);assert.deepEqual(c.selectionSegments(s,[DAY,'2026-11-10'],Z),[{day:DAY,start:1380,end:1440},{day:'2026-11-10',start:0,end:60}])});
+for(const v of [null,{},true,[],{step:0,hourHeight:-1,weekStart:4,duration:'60',secondZone:'invalid',workingStart:NaN,workingEnd:Infinity}])test('bad saved preferences '+JSON.stringify(v),()=>assert.deepEqual(c.validPreferences(v),c.DEFAULT_PREFS));
+test('saved preferences retain explicit booleans and valid timezone',()=>{const v=c.validPreferences({step:5,hourHeight:88,duration:120,weekStart:6,workingStart:23,workingEnd:1,showTasks:false,showCompleted:true,secondZone:'America/New_York'});assert.equal(v.workingEnd,24);assert.equal(v.showTasks,false);assert.equal(v.secondZone,'America/New_York')});
+test('month navigation and both week starts',()=>{assert.equal(c.monthShift('2026-01-31',1),'2026-02-01');assert.equal(c.monthShift('2026-01-01',-1),'2025-12-01');assert.equal(c.weekStart('2026-11-08',0),'2026-11-02');assert.equal(c.weekStart('2026-11-08',6),'2026-11-08')});
+test('all-day uses date span and is excluded from hourly overlap lanes',()=>{const b={key:'x',id:'x',allDay:true,startDate:DAY,endDate:'2026-11-11',start:d.atMinute(DAY,0,Z),end:d.atMinute('2026-11-11',0,Z)};assert.ok(c.allDayOn(b,'2026-11-10'));assert.ok(!c.allDayOn(b,'2026-11-11'));assert.deepEqual(grid.segmentsForDay([b],DAY,Z),[])});
+for(const value of ['red','url(x)','#fff',null,42])test('untrusted color safely ignored '+value,()=>assert.equal(c.safeColor(value),'#7c83ff'));
+for(const value of ['javascript:alert(1)','http://example.org','https://x:y@example.org','not a URL',null])test('untrusted meeting URL safely ignored '+value,()=>assert.equal(c.safeMeetingLink(value),''));
+test('HTTPS meeting URL and accessible text colors',()=>{assert.equal(c.safeMeetingLink('https://example.org/room'),'https://example.org/room');assert.equal(c.textColor('#ffffff'),'#000000');assert.equal(c.textColor('#000000'),'#ffffff')});

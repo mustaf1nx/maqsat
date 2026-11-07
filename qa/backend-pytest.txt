@@ -1,0 +1,29 @@
+........................................................................ [ 45%]
+........................................................................ [ 90%]
+...............                                                          [100%]
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.13.5-final-0 ________________
+
+Name                       Stmts   Miss  Cover   Missing
+--------------------------------------------------------
+app/__init__.py                0      0   100%
+app/calendar_transfer.py     141     20    86%   86, 92-93, 98, 106, 108, 112, 114-117, 120-123, 140-144
+app/common.py                 91      1    99%   16
+app/db.py                     25      5    80%   10, 12, 15, 31-32
+app/main.py                  103     12    88%   82, 99, 123-133
+app/manage.py                 30      0   100%
+app/models.py                196      0   100%
+app/recurrence.py             98      2    98%   53, 71
+app/routers/__init__.py        0      0   100%
+app/routers/calendar.py      246     19    92%   74, 107-108, 112-116, 214, 217-218, 226, 228-230, 243, 291-292, 295
+app/routers/finance.py       105      7    93%   31, 73-76, 100, 126
+app/routers/health.py        136      8    94%   70, 141-143, 163-166
+app/routers/overview.py       81      0   100%
+app/routers/planning.py       79      2    97%   55, 94
+app/schemas.py               201      0   100%
+app/security.py              101      8    92%   22, 27, 37-38, 42, 78, 105, 111
+--------------------------------------------------------
+TOTAL                       1633     84    95%
+Coverage JSON written to file /mnt/data/maqsat-calendar-diagnostics/coverage.json
+159 passed in 32.19s
+PYTEST_EXIT=0

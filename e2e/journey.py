@@ -43,8 +43,11 @@ def journey(h):
  check('Ctrl K quick add Russian income',quick)
  today=datetime.now(ZoneInfo('Asia/Almaty')).date();day=today+timedelta(days=(7-today.weekday())%7 or 7);datekey=day.isoformat()
  def calendar_create():
-  h.nav('Расписание');page.get_by_label('Дата календаря').fill(datekey);page.get_by_role('button',name='Добавить событие',exact=True).click();dialog().get_by_label('Название события').fill('QA цикл');dialog().get_by_label('Начало',exact=True).fill(datekey+'T10:00');dialog().get_by_label('Окончание',exact=True).fill(datekey+'T11:00');dialog().get_by_label('Место',exact=True).fill('QA аудитория');dialog().get_by_label('Повторять',exact=True).select_option('weekly');dialog().get_by_label('Напомнить',exact=True).select_option('15');save();
-  event=[e for e in get('/events') if e['title']=='QA цикл'][0];assert event['recurrence']['weekdays']==[0,2,4];assert event['location']=='QA аудитория';assert event['reminder_minutes']==15
+  h.nav('Расписание');page.get_by_label('Дата календаря').fill(datekey);page.get_by_label('Вид календаря',exact=True).select_option('week')
+  page.get_by_role('button',name='Создать',exact=True).click();dialog().get_by_role('button',name='Подробнее',exact=True).click()
+  dialog().get_by_label('Название события').fill('QA цикл');dialog().get_by_label('Начало',exact=True).fill(datekey+'T10:00');dialog().get_by_label('Окончание',exact=True).fill(datekey+'T11:00');dialog().get_by_label('Место',exact=True).fill('QA аудитория');dialog().get_by_label('Повторять',exact=True).select_option('weekly')
+  dialog().get_by_role('button',name='Ср',exact=True).click();dialog().get_by_role('button',name='Пт',exact=True).click();dialog().get_by_role('button',name='Добавить напоминание',exact=True).click();save()
+  event=[e for e in get('/events') if e['title']=='QA цикл'][0];assert event['recurrence']['weekdays']==[0,2,4];assert event['location']=='QA аудитория';assert event['reminders']==[15]
   assert page.get_by_test_id('calendar-event').filter(has_text='QA цикл').count()==3
  check('recurring weekdays, place, reminder calendar',calendar_create)
  def drag_resize():
@@ -54,12 +57,12 @@ def journey(h):
   expect(page.get_by_test_id('calendar-event').filter(has_text='QA цикл').first.locator('.event-time')).to_contain_text('11:00')
   page.locator('.toast').get_by_role('button',name='Отменить',exact=True).click();page.wait_for_timeout(250)
   expect(page.get_by_test_id('calendar-event').filter(has_text='QA цикл').first.locator('.event-time')).to_contain_text('10:00')
-  block=page.get_by_test_id('calendar-event').filter(has_text='QA цикл').first;handle=block.locator('.resize-handle').bounding_box();assert handle
+  block=page.get_by_test_id('calendar-event').filter(has_text='QA цикл').first;handle=block.locator('.resize-handle.bottom').bounding_box();assert handle
   page.mouse.move(handle['x']+handle['width']/2,handle['y']+4);page.mouse.down();page.mouse.move(handle['x']+handle['width']/2,handle['y']+36,steps=8);page.mouse.up();page.wait_for_timeout(350)
   expect(page.get_by_test_id('calendar-event').filter(has_text='QA цикл').first.locator('.event-time')).to_contain_text('11:30')
  check('drag event, undo and resize by 30 minutes',drag_resize)
  def series_edit():
-  page.get_by_test_id('calendar-event').filter(has_text='QA цикл').first.click();dialog().get_by_role('button',name='Вся серия',exact=True).click();dialog().get_by_label('Место',exact=True).fill('Новый адрес серии');save();assert [e for e in get('/events') if e['title']=='QA цикл'][0]['location']=='Новый адрес серии'
+  page.get_by_test_id('calendar-event').filter(has_text='QA цикл').first.click();dialog().get_by_role('button',name='Редактировать',exact=True).click();dialog().get_by_role('button',name='Вся серия',exact=True).click();dialog().get_by_label('Место',exact=True).fill('Новый адрес серии');save();assert [e for e in get('/events') if e['title']=='QA цикл'][0]['location']=='Новый адрес серии'
  check('edit whole recurrence series from an occurrence',series_edit)
  def workout():
   h.nav('Тренировки');page.get_by_role('button',name='Добавить тренировку',exact=True).click();dialog().get_by_label('Что тренировали / планируете?').fill('QA тренировка');dialog().get_by_role('button',name='Первое упражнение').click();dialog().get_by_label('Упражнение 1',exact=True).fill('Моё упражнение');dialog().get_by_label('Подходы 1',exact=True).fill('3');dialog().get_by_label('Повторы 1',exact=True).fill('8 / 8 / 7');dialog().get_by_role('button',name='Сохранить шаблон',exact=True).click();page.wait_for_timeout(200);dialog().get_by_label('Статус',exact=True).select_option('done');save()

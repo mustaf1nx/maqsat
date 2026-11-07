@@ -16,7 +16,7 @@ from .security import (public_user, hash_password, verify_password, current_user
                        admin_user, check_origin, guard_login, failed_login, successful_login,
                        attach_session, token_digest, csrf_token, COOKIE_NAME)
 
-app = FastAPI(title='MAQSAT API', version='0.3.0', docs_url=None, redoc_url=None)
+app = FastAPI(title='MAQSAT API', version='0.4.0', docs_url=None, redoc_url=None)
 
 @app.middleware('http')
 async def security_headers(request: Request, call_next):

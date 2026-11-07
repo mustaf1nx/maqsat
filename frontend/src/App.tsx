@@ -41,7 +41,7 @@ export default function App(){
  const notify=useCallback((text:string,error=false,undo?:()=>Promise<void>)=>setToast({text,error,undo}),[]);
  const refresh=useCallback(()=>setVersion(x=>x+1),[]);
  const close=useCallback(()=>setEditor(null),[]);
- const edit=useCallback((kind:Kind,value?:object,scope?:'single'|'series')=>{setQuick(false);setLibrary(null);setEditor({kind,value:value as Record<string,unknown>|undefined,scope})},[]);
+ const edit=useCallback((kind:Kind,value?:object,scope?:'single'|'following'|'series')=>{setQuick(false);setLibrary(null);setEditor({kind,value:value as Record<string,unknown>|undefined,scope})},[]);
  const go=useCallback((p:Page)=>{window.location.hash='/'+p;setPage(p);setMobile(false);window.scrollTo(0,0)},[]);
  const templates=useCallback((kind?:Kind)=>setLibrary({kind}),[]);
  useEffect(()=>{const fn=()=>setPage(readPage());window.addEventListener('hashchange',fn);return()=>window.removeEventListener('hashchange',fn)},[]);

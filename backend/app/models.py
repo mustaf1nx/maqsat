@@ -53,6 +53,15 @@ class Idea(Base):
     converted_task_id: Mapped[str | None] = mapped_column(ForeignKey('tasks.id', ondelete='SET NULL', name='fk_ideas_task'), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
+class CalendarCollection(Base):
+    """Private calendars owned by one account; never public Google calendars."""
+    __tablename__ = 'calendars'
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    user_id: Mapped[str] = mapped_column(ForeignKey('users.id', ondelete='CASCADE'), index=True)
+    title: Mapped[str] = mapped_column(String(120))
+    color: Mapped[str] = mapped_column(String(7), default='#7c83ff', server_default='#7c83ff')
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
 class Event(Base):
     __tablename__ = 'events'
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
@@ -69,6 +78,16 @@ class Event(Base):
     reminder_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
     workout_template_id: Mapped[str | None] = mapped_column(ForeignKey('workout_templates.id', ondelete='SET NULL', name='fk_events_workout_template'), nullable=True)
     version: Mapped[int] = mapped_column(Integer, default=1, server_default='1')
+    calendar_id: Mapped[str | None] = mapped_column(ForeignKey('calendars.id', ondelete='SET NULL', name='fk_events_calendar'), nullable=True, index=True)
+    color: Mapped[str | None] = mapped_column(String(7), nullable=True)
+    all_day: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false())
+    availability: Mapped[str] = mapped_column(String(8), default='busy', server_default='busy')
+    meeting_url: Mapped[str] = mapped_column(String(2048), default='', server_default='')
+    reminders: Mapped[list] = mapped_column(JSON, default=list, server_default='[]')
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    import_uid: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    __table_args__ = (UniqueConstraint('user_id', 'import_uid', name='uq_event_import_uid'),)
+
 
 class Goal(Base):
     __tablename__ = 'goals'

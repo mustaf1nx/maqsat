@@ -53,6 +53,30 @@ def test_fresh_upgrade_and_empty_downgrade(tmp_path):
     migrate(url,'upgrade','head')
     engine=sa.create_engine(url)
     with engine.connect() as c:
-        assert c.execute(sa.text('SELECT version_num FROM alembic_version')).scalar()=='0002_daily_flow'
-        assert len(sa.inspect(c).get_table_names())==18
+        assert c.execute(sa.text('SELECT version_num FROM alembic_version')).scalar()=='0003_calendar_tools'
+        assert len(sa.inspect(c).get_table_names())==19
+    engine.dispose()
+
+def test_v03_calendar_upgrade_preserves_series_and_workout_links(tmp_path):
+    url='sqlite:///'+str(tmp_path/'calendar-v03.db')
+    migrate(url,'upgrade','0002_daily_flow')
+    engine=sa.create_engine(url);meta=sa.MetaData();meta.reflect(engine)
+    now=datetime(2026,11,9,5,tzinfo=timezone.utc)
+    with engine.begin() as c:
+        c.execute(meta.tables['users'].insert(),{'id':'user-v03','username':'keep-user','display_name':'Keep','password_hash':'existing-hash-not-changed','is_admin':True,'created_at':now})
+        c.execute(meta.tables['events'].insert(),{'id':'series-v03','user_id':'user-v03','title':'Existing series','starts_at':now,'ends_at':now+timedelta(hours=1),'category':'Тренировка','note':'Keep note','created_at':now,'location':'Keep location','timezone':'Asia/Almaty','recurrence':{'frequency':'weekly','interval':1,'weekdays':[0,2,4],'until':None},'reminder_minutes':15,'version':5})
+        c.execute(meta.tables['event_overrides'].insert(),{'id':'override-v03','user_id':'user-v03','event_id':'series-v03','occurrence_key':'2026-11-11','data':{'location':'Exception location'},'cancelled':False})
+        c.execute(meta.tables['workouts'].insert(),{'id':'workout-v03','user_id':'user-v03','title':'Existing journal','minutes':60,'note':'Keep exercises','happened_at':now,'created_at':now,'event_id':'series-v03','event_key':'2026-11-09','status':'done','exercises':[{'name':'Saved exercise','sets':3,'reps':'8','note':''}]})
+    migrate(url,'upgrade','head');migrate(url,'upgrade','head')
+    meta=sa.MetaData();meta.reflect(engine)
+    with engine.connect() as c:
+        ev=c.execute(sa.select(meta.tables['events'])).mappings().one()
+        assert ev['id']=='series-v03' and ev['version']==5 and ev['reminder_minutes']==15
+        assert ev['recurrence']['weekdays']==[0,2,4] and ev['location']=='Keep location'
+        assert ev['calendar_id'] is None and ev['all_day'] is False and ev['reminders']==[] and ev['availability']=='busy'
+        assert ev['deleted_at'] is None
+        ex=c.execute(sa.select(meta.tables['event_overrides'])).mappings().one();assert ex['data']['location']=='Exception location'
+        log=c.execute(sa.select(meta.tables['workouts'])).mappings().one();assert log['event_id']=='series-v03' and log['exercises'][0]['sets']==3
+        assert c.execute(sa.select(meta.tables['users'].c.password_hash)).scalar()=='existing-hash-not-changed'
+        assert c.execute(sa.text('PRAGMA foreign_key_check')).all()==[]
     engine.dispose()

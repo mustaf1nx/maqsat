@@ -1,0 +1,514 @@
+TAP version 13
+# Subtest: drag range 600 to 690
+ok 1 - drag range 600 to 690
+  ---
+  duration_ms: 15.970861
+  type: 'test'
+  ...
+# Subtest: drag range 840 to 750
+ok 2 - drag range 840 to 750
+  ---
+  duration_ms: 0.843661
+  type: 'test'
+  ...
+# Subtest: drag range 604 to 604
+ok 3 - drag range 604 to 604
+  ---
+  duration_ms: 0.779846
+  type: 'test'
+  ...
+# Subtest: drag range 1439 to 1440
+ok 4 - drag range 1439 to 1440
+  ---
+  duration_ms: 0.652914
+  type: 'test'
+  ...
+# Subtest: drag range 0 to -100
+ok 5 - drag range 0 to -100
+  ---
+  duration_ms: 0.679725
+  type: 'test'
+  ...
+# Subtest: cross-day selection and reversal are equivalent
+ok 6 - cross-day selection and reversal are equivalent
+  ---
+  duration_ms: 1.684969
+  type: 'test'
+  ...
+# Subtest: long drag rejected, not silently truncated
+ok 7 - long drag rejected, not silently truncated
+  ---
+  duration_ms: 0.625713
+  type: 'test'
+  ...
+# Subtest: click uses selected default duration and clamps midnight
+ok 8 - click uses selected default duration and clamps midnight
+  ---
+  duration_ms: 1.391006
+  type: 'test'
+  ...
+# Subtest: range obeys 5 minute grid
+ok 9 - range obeys 5 minute grid
+  ---
+  duration_ms: 1.553351
+  type: 'test'
+  ...
+# Subtest: range obeys 15 minute grid
+ok 10 - range obeys 15 minute grid
+  ---
+  duration_ms: 1.784209
+  type: 'test'
+  ...
+# Subtest: range obeys 30 minute grid
+ok 11 - range obeys 30 minute grid
+  ---
+  duration_ms: 1.177765
+  type: 'test'
+  ...
+# Subtest: range obeys 60 minute grid
+ok 12 - range obeys 60 minute grid
+  ---
+  duration_ms: 1.137044
+  type: 'test'
+  ...
+# Subtest: all-day range includes selected end and reverses
+ok 13 - all-day range includes selected end and reverses
+  ---
+  duration_ms: 1.456135
+  type: 'test'
+  ...
+# Subtest: all-day DST spring day is 23 hours
+ok 14 - all-day DST spring day is 23 hours
+  ---
+  duration_ms: 0.674737
+  type: 'test'
+  ...
+# Subtest: all-day DST fall day is 25 hours
+ok 15 - all-day DST fall day is 25 hours
+  ---
+  duration_ms: 0.456228
+  type: 'test'
+  ...
+# Subtest: nonexistent DST start is rejected without a bad draft
+ok 16 - nonexistent DST start is rejected without a bad draft
+  ---
+  duration_ms: 0.402457
+  type: 'test'
+  ...
+# Subtest: selection clips multiple day overlays with exclusive end
+ok 17 - selection clips multiple day overlays with exclusive end
+  ---
+  duration_ms: 1.087179
+  type: 'test'
+  ...
+# Subtest: night preview shows each part once
+ok 18 - night preview shows each part once
+  ---
+  duration_ms: 0.646335
+  type: 'test'
+  ...
+# Subtest: bad saved preferences null
+ok 19 - bad saved preferences null
+  ---
+  duration_ms: 0.301104
+  type: 'test'
+  ...
+# Subtest: bad saved preferences {}
+ok 20 - bad saved preferences {}
+  ---
+  duration_ms: 0.133531
+  type: 'test'
+  ...
+# Subtest: bad saved preferences true
+ok 21 - bad saved preferences true
+  ---
+  duration_ms: 0.176105
+  type: 'test'
+  ...
+# Subtest: bad saved preferences []
+ok 22 - bad saved preferences []
+  ---
+  duration_ms: 0.067873
+  type: 'test'
+  ...
+# Subtest: bad saved preferences {"step":0,"hourHeight":-1,"weekStart":4,"duration":"60","secondZone":"invalid","workingStart":null,"workingEnd":null}
+ok 23 - bad saved preferences {"step":0,"hourHeight":-1,"weekStart":4,"duration":"60","secondZone":"invalid","workingStart":null,"workingEnd":null}
+  ---
+  duration_ms: 0.410969
+  type: 'test'
+  ...
+# Subtest: saved preferences retain explicit booleans and valid timezone
+ok 24 - saved preferences retain explicit booleans and valid timezone
+  ---
+  duration_ms: 0.343959
+  type: 'test'
+  ...
+# Subtest: month navigation and both week starts
+ok 25 - month navigation and both week starts
+  ---
+  duration_ms: 0.13934
+  type: 'test'
+  ...
+# Subtest: all-day uses date span and is excluded from hourly overlap lanes
+ok 26 - all-day uses date span and is excluded from hourly overlap lanes
+  ---
+  duration_ms: 0.660736
+  type: 'test'
+  ...
+# Subtest: untrusted color safely ignored red
+ok 27 - untrusted color safely ignored red
+  ---
+  duration_ms: 0.120372
+  type: 'test'
+  ...
+# Subtest: untrusted color safely ignored url(x)
+ok 28 - untrusted color safely ignored url(x)
+  ---
+  duration_ms: 0.066911
+  type: 'test'
+  ...
+# Subtest: untrusted color safely ignored \#fff
+ok 29 - untrusted color safely ignored \#fff
+  ---
+  duration_ms: 0.038287
+  type: 'test'
+  ...
+# Subtest: untrusted color safely ignored null
+ok 30 - untrusted color safely ignored null
+  ---
+  duration_ms: 0.032859
+  type: 'test'
+  ...
+# Subtest: untrusted color safely ignored 42
+ok 31 - untrusted color safely ignored 42
+  ---
+  duration_ms: 0.034172
+  type: 'test'
+  ...
+# Subtest: untrusted meeting URL safely ignored javascript:alert(1)
+ok 32 - untrusted meeting URL safely ignored javascript:alert(1)
+  ---
+  duration_ms: 0.194944
+  type: 'test'
+  ...
+# Subtest: untrusted meeting URL safely ignored http://example.org
+ok 33 - untrusted meeting URL safely ignored http://example.org
+  ---
+  duration_ms: 0.055714
+  type: 'test'
+  ...
+# Subtest: untrusted meeting URL safely ignored https://x:y@example.org
+ok 34 - untrusted meeting URL safely ignored https://x:y@example.org
+  ---
+  duration_ms: 0.044777
+  type: 'test'
+  ...
+# Subtest: untrusted meeting URL safely ignored not a URL
+ok 35 - untrusted meeting URL safely ignored not a URL
+  ---
+  duration_ms: 0.084837
+  type: 'test'
+  ...
+# Subtest: untrusted meeting URL safely ignored null
+ok 36 - untrusted meeting URL safely ignored null
+  ---
+  duration_ms: 0.034221
+  type: 'test'
+  ...
+# Subtest: HTTPS meeting URL and accessible text colors
+ok 37 - HTTPS meeting URL and accessible text colors
+  ---
+  duration_ms: 0.14642
+  type: 'test'
+  ...
+# Subtest: wall-clock ↔ UTC Asia/Almaty 2026-11-07T09:30
+ok 38 - wall-clock ↔ UTC Asia/Almaty 2026-11-07T09:30
+  ---
+  duration_ms: 13.304772
+  type: 'test'
+  ...
+# Subtest: wall-clock ↔ UTC UTC 2026-11-07T00:00
+ok 39 - wall-clock ↔ UTC UTC 2026-11-07T00:00
+  ---
+  duration_ms: 0.408355
+  type: 'test'
+  ...
+# Subtest: wall-clock ↔ UTC America/New_York 2026-07-01T10:00
+ok 40 - wall-clock ↔ UTC America/New_York 2026-07-01T10:00
+  ---
+  duration_ms: 0.45769
+  type: 'test'
+  ...
+# Subtest: wall-clock ↔ UTC America/New_York 2026-12-01T10:00
+ok 41 - wall-clock ↔ UTC America/New_York 2026-12-01T10:00
+  ---
+  duration_ms: 0.329838
+  type: 'test'
+  ...
+# Subtest: wall-clock ↔ UTC Asia/Kathmandu 2026-11-07T10:00
+ok 42 - wall-clock ↔ UTC Asia/Kathmandu 2026-11-07T10:00
+  ---
+  duration_ms: 0.404079
+  type: 'test'
+  ...
+# Subtest: invalid date rejected: 
+ok 43 - invalid date rejected: 
+  ---
+  duration_ms: 0.216146
+  type: 'test'
+  ...
+# Subtest: invalid date rejected: tomorrow
+ok 44 - invalid date rejected: tomorrow
+  ---
+  duration_ms: 0.120893
+  type: 'test'
+  ...
+# Subtest: invalid date rejected: 2026-02-31T10:00
+ok 45 - invalid date rejected: 2026-02-31T10:00
+  ---
+  duration_ms: 0.312191
+  type: 'test'
+  ...
+# Subtest: invalid date rejected: 2026-11-07T25:00
+ok 46 - invalid date rejected: 2026-11-07T25:00
+  ---
+  duration_ms: 0.322456
+  type: 'test'
+  ...
+# Subtest: nonexistent DST wall time rejected
+ok 47 - nonexistent DST wall time rejected
+  ---
+  duration_ms: 0.705773
+  type: 'test'
+  ...
+# Subtest: ambiguous DST time deterministic and round-trips
+ok 48 - ambiguous DST time deterministic and round-trips
+  ---
+  duration_ms: 0.545131
+  type: 'test'
+  ...
+# Subtest: Monday/weekend/leap/year rollover
+ok 49 - Monday/weekend/leap/year rollover
+  ---
+  duration_ms: 0.173191
+  type: 'test'
+  ...
+# Subtest: negative and next-day calendar minute
+ok 50 - negative and next-day calendar minute
+  ---
+  duration_ms: 0.574076
+  type: 'test'
+  ...
+# Subtest: move preserves duration over day and minute rollover
+ok 51 - move preserves duration over day and minute rollover
+  ---
+  duration_ms: 0.561196
+  type: 'test'
+  ...
+# Subtest: move by day preserves local hour over DST
+ok 52 - move by day preserves local hour over DST
+  ---
+  duration_ms: 0.531511
+  type: 'test'
+  ...
+# Subtest: completed tasks are not overdue
+ok 53 - completed tasks are not overdue
+  ---
+  duration_ms: 0.094994
+  type: 'test'
+  ...
+# Subtest: Russian finance enum labels
+ok 54 - Russian finance enum labels
+  ---
+  duration_ms: 0.745644
+  type: 'test'
+  ...
+# Subtest: currency formats decimal amount
+ok 55 - currency formats decimal amount
+  ---
+  duration_ms: 3.175056
+  type: 'test'
+  ...
+# Subtest: disabled or corrupt local storage is safe
+ok 56 - disabled or corrupt local storage is safe
+  ---
+  duration_ms: 0.275435
+  type: 'test'
+  ...
+# Subtest: overlapping blocks get nonoverlapping lanes
+ok 57 - overlapping blocks get nonoverlapping lanes
+  ---
+  duration_ms: 0.768138
+  type: 'test'
+  ...
+# Subtest: adjacent blocks share a full-width lane
+ok 58 - adjacent blocks share a full-width lane
+  ---
+  duration_ms: 0.665022
+  type: 'test'
+  ...
+# Subtest: night event clips across two local days
+ok 59 - night event clips across two local days
+  ---
+  duration_ms: 0.631512
+  type: 'test'
+  ...
+# Subtest: event ending at midnight does not appear next day
+ok 60 - event ending at midnight does not appear next day
+  ---
+  duration_ms: 0.4978
+  type: 'test'
+  ...
+# Subtest: snap 15 min: 7
+ok 61 - snap 15 min: 7
+  ---
+  duration_ms: 0.216537
+  type: 'test'
+  ...
+# Subtest: snap 15 min: 8
+ok 62 - snap 15 min: 8
+  ---
+  duration_ms: 0.04652
+  type: 'test'
+  ...
+# Subtest: snap 15 min: 22
+ok 63 - snap 15 min: 22
+  ---
+  duration_ms: 0.034112
+  type: 'test'
+  ...
+# Subtest: snap 15 min: 23
+ok 64 - snap 15 min: 23
+  ---
+  duration_ms: 0.030606
+  type: 'test'
+  ...
+# Subtest: snap 15 min: -8
+ok 65 - snap 15 min: -8
+  ---
+  duration_ms: 0.030506
+  type: 'test'
+  ...
+# Subtest: valid initial focus pomodoro
+ok 66 - valid initial focus pomodoro
+  ---
+  duration_ms: 0.158018
+  type: 'test'
+  ...
+# Subtest: valid initial focus long
+ok 67 - valid initial focus long
+  ---
+  duration_ms: 0.162946
+  type: 'test'
+  ...
+# Subtest: valid initial focus custom
+ok 68 - valid initial focus custom
+  ---
+  duration_ms: 0.085148
+  type: 'test'
+  ...
+# Subtest: valid initial focus stopwatch
+ok 69 - valid initial focus stopwatch
+  ---
+  duration_ms: 0.051377
+  type: 'test'
+  ...
+# Subtest: focus pause/resume uses timestamps
+ok 70 - focus pause/resume uses timestamps
+  ---
+  duration_ms: 0.161975
+  type: 'test'
+  ...
+# Subtest: sleeping tab cannot overcount a work interval
+ok 71 - sleeping tab cannot overcount a work interval
+  ---
+  duration_ms: 0.118319
+  type: 'test'
+  ...
+# Subtest: clock backwards never creates negative time
+ok 72 - clock backwards never creates negative time
+  ---
+  duration_ms: 0.069865
+  type: 'test'
+  ...
+# Subtest: stopwatch is bounded to 4h
+ok 73 - stopwatch is bounded to 4h
+  ---
+  duration_ms: 0.051698
+  type: 'test'
+  ...
+# Subtest: fourth completed round selects long break; never autostarts
+ok 74 - fourth completed round selects long break; never autostarts
+  ---
+  duration_ms: 0.146461
+  type: 'test'
+  ...
+# Subtest: corrupted timer rejected null
+ok 75 - corrupted timer rejected null
+  ---
+  duration_ms: 0.060591
+  type: 'test'
+  ...
+# Subtest: corrupted timer rejected {}
+ok 76 - corrupted timer rejected {}
+  ---
+  duration_ms: 0.032549
+  type: 'test'
+  ...
+# Subtest: corrupted timer rejected {"method":"toString"}
+ok 77 - corrupted timer rejected {"method":"toString"}
+  ---
+  duration_ms: 0.029454
+  type: 'test'
+  ...
+# Subtest: corrupted timer rejected {"method":"pomodoro","phase":"work","work":1500,"rest":300,"longRest":900,"round":0,"elapsed":-1,"runningAt":null,"label":"","clientId":"new","ready":false}
+ok 78 - corrupted timer rejected {"method":"pomodoro","phase":"work","work":1500,"rest":300,"longRest":900,"round":0,"elapsed":-1,"runningAt":null,"label":"","clientId":"new","ready":false}
+  ---
+  duration_ms: 0.036525
+  type: 'test'
+  ...
+# Subtest: corrupted timer rejected {"method":"pomodoro","phase":"work","work":1500,"rest":300,"longRest":900,"round":0,"elapsed":0,"runningAt":"wrong","label":"","clientId":"new","ready":false}
+ok 79 - corrupted timer rejected {"method":"pomodoro","phase":"work","work":1500,"rest":300,"longRest":900,"round":0,"elapsed":0,"runningAt":"wrong","label":"","clientId":"new","ready":false}
+  ---
+  duration_ms: 0.037417
+  type: 'test'
+  ...
+# Subtest: corrupted timer rejected {"method":"pomodoro","phase":"work","work":null,"rest":300,"longRest":900,"round":0,"elapsed":0,"runningAt":null,"label":"","clientId":"new","ready":false}
+ok 80 - corrupted timer rejected {"method":"pomodoro","phase":"work","work":null,"rest":300,"longRest":900,"round":0,"elapsed":0,"runningAt":null,"label":"","clientId":"new","ready":false}
+  ---
+  duration_ms: 0.067041
+  type: 'test'
+  ...
+# Subtest: corrupted timer rejected {"method":"pomodoro","phase":"work","work":1500,"rest":300,"longRest":900,"round":0,"elapsed":0,"runningAt":null,"label":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","clientId":"new","ready":false}
+ok 81 - corrupted timer rejected {"method":"pomodoro","phase":"work","work":1500,"rest":300,"longRest":900,"round":0,"elapsed":0,"runningAt":null,"label":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","clientId":"new","ready":false}
+  ---
+  duration_ms: 0.035885
+  type: 'test'
+  ...
+# Subtest: timer JSON survives serialization
+ok 82 - timer JSON survives serialization
+  ---
+  duration_ms: 0.106751
+  type: 'test'
+  ...
+# Subtest: all built-in templates are usable editor payloads
+ok 83 - all built-in templates are usable editor payloads
+  ---
+  duration_ms: 1.752572
+  type: 'test'
+  ...
+# Subtest: templates do not share mutable exercise or checklist objects
+ok 84 - templates do not share mutable exercise or checklist objects
+  ---
+  duration_ms: 2.467468
+  type: 'test'
+  ...
+1..84
+# tests 84
+# suites 0
+# pass 84
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 400.590957

@@ -1,0 +1,23 @@
+{
+  "runtime": "React 18.2 + TestClient/SQLite diagnostic bridge",
+  "checks": [
+    "Forward drag previews without saving; release opens one timed draft; save creates one record",
+    "Reverse drag normalizes chronological start and end",
+    "Escape and window blur cancel without orphan or duplicate events",
+    "Right button does not create; ordinary click preserves the default duration",
+    "Move existing event and undo retain duration without accidental creation",
+    "Both resize handles modify only the intended boundary",
+    "Server rejection rolls back the visual event and leaves stored time unchanged",
+    "Details, safe meeting link, editing, multiple reminders and duplicate draft",
+    "Failed creation preserves the draft and retries once",
+    "Cross-column selection creates one multi-day event, not several duplicates",
+    "Edge autoscroll works and stops on cancel",
+    "All-day strip selects inclusive dates and stores exclusive end",
+    "Month-grid date dragging creates a multi-day all-day event",
+    "Private calendar creation, assignment, visibility and search",
+    "Deletion moves a record to trash; restore preserves its data",
+    "Preferences change actual grid geometry and secondary timezone labels",
+    "All six views render without page overflow; keyboard shortcuts ignore text inputs"
+  ],
+  "page_errors": []
+}

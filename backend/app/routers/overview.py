@@ -4,7 +4,7 @@ from decimal import Decimal
 from zoneinfo import ZoneInfo
 from fastapi import APIRouter,Depends,HTTPException,Query
 from pydantic import ValidationError,Field
-from sqlalchemy import text
+from sqlalchemy import text,select
 from sqlalchemy.orm import Session
 from ..db import get_db
 from ..models import User,Task,Transaction,FocusSession,Workout,Idea,Project,SavedTemplate
@@ -72,7 +72,7 @@ def template_add(payload: TemplateIn,user: User=Depends(csrf_protected),db: Sess
     except ValidationError:raise HTTPException(422,'Проверьте содержимое шаблона') from None
     data=validated.model_dump(mode='json')
     # User-specific links and completion state should not accidentally be copied.
-    for key in ['goal_id','project_id','workout_template_id']:data.pop(key,None)
+    for key in ['goal_id','project_id','workout_template_id','calendar_id']:data.pop(key,None)
     if payload.kind=='task':
         data['completed']=False;data['due_at']=None
         for item in data['checklist']:item['completed']=False
@@ -96,13 +96,13 @@ def diagnostics(user: User=Depends(current_user),db: Session=Depends(get_db)):
     if not user.is_admin:raise HTTPException(403,'Недостаточно прав')
     db.execute(text('SELECT 1'))
     # No host, credentials, user data or environment dump in diagnostics.
-    return {'database':'ok','app_version':'0.3.0','checked_at':utcnow().isoformat(),
+    return {'database':'ok','app_version':'0.4.0','checked_at':utcnow().isoformat(),
             'reminders':'В открытом браузере; фоновые push не подключены',
             'login_limit':'В памяти одного процесса'}
 
 @router.get('/export')
 def export_personal(user: User=Depends(current_user),db: Session=Depends(get_db)):
-    from ..models import Goal,Event,EventOverride,RecurringPayment,WorkEntry,Habit,HabitCheck,WorkoutTemplate
-    classes=[Task,Idea,Goal,Event,EventOverride,Transaction,RecurringPayment,Project,WorkEntry,FocusSession,Workout,WorkoutTemplate,Habit,HabitCheck,SavedTemplate]
-    return {'schema_version':'0.3.0','exported_at':utcnow().isoformat(),'profile':public_user(user),
-            'data':{cls.__tablename__:[serialize(x) for x in records(db,cls,user)] for cls in classes}}
+    from ..models import Goal,Event,EventOverride,RecurringPayment,WorkEntry,Habit,HabitCheck,WorkoutTemplate,CalendarCollection
+    classes=[Task,Idea,Goal,Event,EventOverride,Transaction,RecurringPayment,Project,WorkEntry,FocusSession,Workout,WorkoutTemplate,Habit,HabitCheck,SavedTemplate,CalendarCollection]
+    return {'schema_version':'0.4.0','exported_at':utcnow().isoformat(),'profile':public_user(user),
+            'data':{cls.__tablename__:[serialize(x) for x in (db.scalars(select(Event).where(Event.user_id==user.id)).all() if cls is Event else records(db,cls,user))] for cls in classes}}

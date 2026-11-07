@@ -47,8 +47,8 @@ class Client:
     def get(self,path):return self.page.request.get(self.url+path)
 
 class Harness:
-    def __init__(self,browser,url,width=1440):
-        self.page=browser.new_page(viewport={'width':width,'height':1100 if width>760 else 844})
+    def __init__(self,browser,url,width=1440,touch=False):
+        self.page=browser.new_page(viewport={'width':width,'height':1100 if width>760 else 844},has_touch=touch,is_mobile=touch)
         self.page.set_default_timeout(10000)
         self.errors=[];self.fail=None;self.client=Client(self.page,url)
         self.page.on('pageerror',lambda error:self.errors.append(str(error)))

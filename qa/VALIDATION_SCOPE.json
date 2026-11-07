@@ -1,0 +1,35 @@
+{
+  "release": "0.4.0",
+  "backend": {
+    "passed": 159,
+    "database": "temporary SQLite",
+    "python": "3.13.5",
+    "line_coverage_percent": 94.85609308022045,
+    "exit_code": 0
+  },
+  "frontend_domain": {
+    "passed": 84,
+    "node": "22.16.0",
+    "exit_code": 0
+  },
+  "browser": {
+    "calendar_stages": 17,
+    "regression_stages": 15,
+    "mobile_checks": 31,
+    "runtime": "React 18.2 diagnostic bridge to actual FastAPI TestClient, SQLite; not production React19 HTTP E2E",
+    "screenshots_created": false
+  },
+  "limited_types": {
+    "diagnostics": 0,
+    "official_react19_typecheck": false
+  },
+  "not_run": [
+    "production React19/Vite build",
+    "official React19 typings",
+    "PostgreSQL runtime",
+    "actual HTTP browser E2E",
+    "Railway deployment",
+    "real iOS/Android/Safari/Firefox",
+    "load/security/a11y audit"
+  ]
+}

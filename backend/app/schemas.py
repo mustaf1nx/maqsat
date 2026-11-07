@@ -33,10 +33,12 @@ class IdeaIn(Input):
     note: str = Field(default='', max_length=5000)
 
 class RecurrenceIn(Input):
-    frequency: Literal['daily','weekly'] = 'weekly'
+    frequency: Literal['daily','weekly','monthly','yearly'] = 'weekly'
     interval: int = Field(default=1, ge=1, le=52)
     weekdays: list[int] = Field(default_factory=list, max_length=7)
     until: date | None = None
+    count: int | None = Field(default=None, ge=1, le=1000)
+    monthly_mode: Literal['day','weekday','last_weekday'] = 'day'
     @field_validator('weekdays')
     @classmethod
     def days(cls, value):
@@ -45,6 +47,7 @@ class RecurrenceIn(Input):
     @model_validator(mode='after')
     def days_required(self):
         if self.frequency=='weekly' and not self.weekdays: raise ValueError('Выберите хотя бы один день недели')
+        if self.count and self.until: raise ValueError('Выберите либо число повторений, либо конечную дату')
         return self
 
 class EventIn(Input):
@@ -58,10 +61,42 @@ class EventIn(Input):
     recurrence: RecurrenceIn | None = None
     reminder_minutes: int | None = Field(default=None, ge=0, le=10080)
     workout_template_id: str | None = Field(default=None, max_length=36)
+    calendar_id: str | None = Field(default=None, max_length=36)
+    color: str | None = Field(default=None, pattern=r'^#[0-9a-fA-F]{6}$')
+    all_day: bool = False
+    availability: Literal['busy','free'] = 'busy'
+    meeting_url: str = Field(default='', max_length=2048)
+    reminders: list[int] = Field(default_factory=list, max_length=5)
+
+    @field_validator('meeting_url')
+    @classmethod
+    def safe_meeting_url(cls, value):
+        from urllib.parse import urlsplit
+        if not value: return value
+        try:
+            url = urlsplit(value)
+            if url.scheme != 'https' or not url.hostname or url.username or url.password or any(ord(c)<32 for c in value):
+                raise ValueError('Укажите HTTPS-ссылку на встречу без логина и пароля')
+        except ValueError:
+            raise ValueError('Укажите корректную HTTPS-ссылку на встречу') from None
+        return value
+
+    @field_validator('reminders')
+    @classmethod
+    def reminder_values(cls, value):
+        if any(x < 0 or x > 10080 for x in value): raise ValueError('Напоминания: от 0 до 10080 минут')
+        return sorted(set(value))
+
     @model_validator(mode='after')
     def check_range(self):
         if self.ends_at <= self.starts_at: raise ValueError('Окончание должно быть после начала')
-        if self.ends_at-self.starts_at > timedelta(days=7): raise ValueError('Событие не может быть длиннее 7 дней')
+        if self.all_day:
+            zone = ZoneInfo(self.timezone)
+            start = self.starts_at.astimezone(zone); end = self.ends_at.astimezone(zone)
+            if any((v.hour, v.minute, v.second, v.microsecond) != (0,0,0,0) for v in (start,end)):
+                raise ValueError('Событие на весь день должно начинаться и заканчиваться в полночь своего часового пояса')
+            if (end.date()-start.date()).days > 366: raise ValueError('Событие не может быть длиннее 366 дней')
+        elif self.ends_at-self.starts_at > timedelta(days=7): raise ValueError('Событие не может быть длиннее 7 дней')
         if self.recurrence and self.recurrence.until:
             if self.recurrence.until < self.starts_at.astimezone(ZoneInfo(self.timezone)).date():
                 raise ValueError('Конец повторений не может быть раньше начала')
@@ -73,8 +108,25 @@ class OccurrencePatch(Input):
     title: str | None = Field(default=None, min_length=1, max_length=240)
     note: str | None = Field(default=None, max_length=5000)
     location: str | None = Field(default=None, max_length=300)
+    category: str | None = Field(default=None, min_length=1, max_length=48)
+    calendar_id: str | None = Field(default=None, max_length=36)
+    color: str | None = Field(default=None, pattern=r'^#[0-9a-fA-F]{6}$')
+    all_day: bool | None = None
+    availability: Literal['busy','free'] | None = None
+    meeting_url: str | None = Field(default=None, max_length=2048)
+    reminder_minutes: int | None = Field(default=None, ge=0, le=10080)
+    reminders: list[int] | None = Field(default=None, max_length=5)
     cancelled: bool = False
     version: int | None = None
+
+class CalendarIn(Input):
+    title: str = Field(min_length=1, max_length=120)
+    color: str = Field(default='#7c83ff', pattern=r'^#[0-9a-fA-F]{6}$')
+
+class CalendarImport(Input):
+    content: str = Field(min_length=1, max_length=2_000_000)
+    calendar_id: str | None = Field(default=None, max_length=36)
+
 
 class GoalIn(Input):
     title: str = Field(min_length=1, max_length=240)
@@ -174,3 +226,5 @@ WorkPatch=partial(WorkIn)
 WorkoutPatch=partial(WorkoutIn)
 WorkoutTemplatePatch=partial(WorkoutTemplateIn)
 HabitPatch=partial(HabitIn)
+
+CalendarPatch = partial(CalendarIn)

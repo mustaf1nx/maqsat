@@ -33,7 +33,7 @@ jobs:
         with: { python-version: '3.12' }
       - run: pip install -r backend/requirements.txt pytest httpx
       - run: cd backend && python -m alembic upgrade head && python -m alembic check
-      - run: cd backend && python -m pytest tests/test_api.py tests/test_daily_flow.py tests/test_account_cli.py -q
+      - run: cd backend && python -m pytest tests/test_api.py tests/test_daily_flow.py tests/test_account_cli.py tests/test_calendar_tools.py -q
   web:
     runs-on: ubuntu-latest
     steps:
