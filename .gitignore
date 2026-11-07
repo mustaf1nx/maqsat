@@ -11,3 +11,8 @@ web_dist/
 *.sqlite3
 .DS_Store
 dist/
+
+.coverage
+coverage.xml
+htmlcov/
+*.tsbuildinfo

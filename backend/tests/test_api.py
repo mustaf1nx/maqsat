@@ -10,23 +10,6 @@ from app.db import Base, get_db
 from app import models
 from app.security import hash_password
 
-@pytest.fixture()
-def env():
-    engine = create_engine('sqlite://', connect_args={'check_same_thread': False}, poolclass=StaticPool)
-    Base.metadata.create_all(engine)
-    Session = sessionmaker(engine, autoflush=False, expire_on_commit=False)
-    def session():
-        with Session() as db:
-            yield db
-    app.dependency_overrides[get_db] = session
-    with Session() as db:
-        db.add(models.User(username='owner', display_name='Owner', password_hash=hash_password('strongpassword123'), is_admin=True))
-        db.add(models.User(username='other', display_name='Other', password_hash=hash_password('strongpassword234')))
-        db.commit()
-    yield Session
-    app.dependency_overrides.clear()
-    engine.dispose()
-
 def sign_in(client, username='owner', password='strongpassword123'):
     res = client.post('/api/v1/auth/login', json={'username': username, 'password': password})
     assert res.status_code == 200, res.text

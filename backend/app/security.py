@@ -43,7 +43,7 @@ def hash_password(password: str) -> str:
     return HASHER.hash(password)
 
 def public_user(user: User) -> dict:
-    return {'id': user.id, 'username': user.username, 'display_name': user.display_name, 'is_admin': user.is_admin}
+    return {'id': user.id, 'username': user.username, 'display_name': user.display_name, 'is_admin': user.is_admin, 'timezone': user.timezone}
 
 def token_digest(token: str) -> str:
     return hashlib.sha256(token.encode()).hexdigest()

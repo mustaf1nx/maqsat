@@ -1,0 +1,48 @@
+name: Verify MAQSAT
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -r backend/requirements.txt pytest pytest-cov httpx
+      - run: cd backend && python -m pytest -q --cov=app --cov-report=term-missing
+  postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: isolated-test-only
+          POSTGRES_DB: maqsat_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      APP_ENV: development
+      DATABASE_URL: postgresql+psycopg://test:isolated-test-only@localhost:5432/maqsat_test
+      TEST_DATABASE_URL: postgresql+psycopg://test:isolated-test-only@localhost:5432/maqsat_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -r backend/requirements.txt pytest httpx
+      - run: cd backend && python -m alembic upgrade head && python -m alembic check
+      - run: cd backend && python -m pytest tests/test_api.py tests/test_daily_flow.py tests/test_account_cli.py -q
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: cd frontend && npm install && npm run typecheck && npm run test:unit && npm run build
+      - run: pip install -r backend/requirements.txt pytest httpx playwright
+      - run: python -m playwright install --with-deps chromium
+      - run: python -m pytest e2e -q
